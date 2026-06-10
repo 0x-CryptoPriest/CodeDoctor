@@ -6,16 +6,22 @@ It is built to find real bugs, fix them, re-check the result, and keep going unt
 
 ## Install
 
+All supported agents:
+
+```bash
+npx skills add https://github.com/0x-CryptoPriest/code-doctor
+```
+
 Codex:
 
 ```bash
-npx --yes skills add https://github.com/0x-CryptoPriest/code-doctor -g --skill code-doctor --agent codex -y --copy
+npx skills add https://github.com/0x-CryptoPriest/code-doctor --agent codex
 ```
 
 Claude:
 
 ```bash
-npx --yes skills add https://github.com/0x-CryptoPriest/code-doctor -g --skill code-doctor --agent claude-code -y --copy
+npx skills add https://github.com/0x-CryptoPriest/code-doctor --agent claude-code
 ```
 
 Private repo access requires GitHub auth on the machine.
