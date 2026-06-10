@@ -33,10 +33,11 @@ If the answer is yes, replace it with the better implementation.
 
 ## Module review
 For each changed module, ask:
-1. Does every caller need to know too much about ordering, validation, config, errors, or data shape?
-2. Would deleting this module remove complexity, or would the same complexity reappear across callers?
-3. Are tests forced to reach past the public interface to prove behavior?
-4. Is there an extra interface or adapter with only one real implementation?
+1. Interface: does every caller need to know too much about ordering, validation, config, errors, or data shape?
+2. Deletion test: would deleting this module remove complexity, or would the same complexity reappear across callers?
+3. Interface-as-test-surface: are tests forced to reach past the public interface to prove behavior?
+4. Adapter reality check: is there an extra adapter or seam with only one real implementation?
+5. Locality: would a future bug fix land here, or would it scatter across callers?
 
 If caller knowledge is high or behavior is scattered, use `references/85-architecture-deepening.md`.
 

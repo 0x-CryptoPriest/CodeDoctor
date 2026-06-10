@@ -3,10 +3,13 @@
 Use this file when code is correct but the structure makes change, testing, or review harder than it should be.
 
 ## Vocabulary
+Use these terms for architecture findings and proposals. Do not drift into vague names like "layer", "service", or "boundary" when one of these terms applies.
+
 - Module: any function, class, package, or slice with a public surface and implementation.
 - Interface: everything callers must know: types, invariants, ordering, errors, config, data shape, and performance expectations.
 - Implementation: the code hidden behind the interface.
 - Depth: how much useful behavior sits behind a small interface.
+- Seam: where an interface lives; a place behavior can be altered without editing callers in place.
 - Adapter: a concrete implementation used to cross a real variation point.
 - Leverage: capability callers get without learning more details.
 - Locality: change, bugs, and verification concentrated in one place.
@@ -22,10 +25,24 @@ Use this file when code is correct but the structure makes change, testing, or r
 Treat these as signals, not permission. Architecture work still needs a concrete change risk and a bounded validation path.
 
 ## Checks
-- Deletion test: if deleting the module removes complexity, it was shallow; if complexity reappears across callers, it was useful.
-- Interface test: callers and tests should prove behavior through the same public interface.
-- Adapter test: one adapter is usually speculative; two justified adapters make the variation real.
+- Deletion test: imagine deleting the module. If complexity vanishes, it was shallow; if complexity reappears across callers, it was earning its keep.
+- Interface-as-test-surface rule: callers and tests should prove behavior through the same public interface.
+- Adapter reality check: one adapter is usually a hypothetical seam; two justified adapters make the seam real.
 - Locality test: a bug fix should land in one module, not across many callers.
+
+Run these checks before proposing a new interface, seam, or adapter.
+
+## Candidate proposal gate
+For broad architecture work, present candidates before implementation unless the structure blocks a requested repair.
+
+Each candidate should include:
+- Files: modules involved.
+- Problem: what caller knowledge, shallow depth, weak locality, or speculative seam creates friction.
+- Solution: what behavior moves behind which interface or seam.
+- Benefits: explain in terms of leverage, locality, and testability.
+- Recommendation strength: `Strong`, `Worth exploring`, or `Speculative`.
+
+Only implement a broad candidate after the user chooses it, or when the current shallow structure blocks the smallest correct repair.
 
 ## Repair moves
 - Move repeated caller logic behind the module interface.
@@ -45,6 +62,8 @@ Treat these as signals, not permission. Architecture work still needs a concrete
 - Stop when the remaining work would require a new module boundary, data model change, migration, or cross-team decision.
 
 ## Output notes
+- Use Module, Interface, Implementation, Depth, Seam, Adapter, Leverage, and Locality consistently.
 - State the old caller knowledge and the new smaller interface.
 - State which behavior moved behind the interface.
 - State which tests were preserved, moved, or added to prove the public behavior.
+- For proposals, include recommendation strength and whether implementation is blocked on user choice.

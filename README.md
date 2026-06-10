@@ -84,6 +84,14 @@ Signals include:
 
 When implementation is appropriate, the skill deepens modules by reducing caller knowledge and moving behavior behind smaller public interfaces. When the task is only a review, architecture work is normally reported as a proposal unless the user explicitly asked for implementation.
 
+Architecture mode uses five required deepening tools:
+
+- consistent vocabulary: Module, Interface, Implementation, Depth, Seam, Adapter, Leverage, and Locality
+- deletion test: if deleting a module makes complexity vanish, the module was shallow; if complexity reappears across callers, it was earning its keep
+- interface-as-test-surface rule: callers and tests should prove behavior through the same public interface
+- adapter reality check: one adapter is usually a hypothetical seam; two justified adapters make the seam real
+- candidate proposal gate: broad architecture work is presented as candidates with recommendation strength before implementation, unless the current structure blocks the requested repair
+
 ### Convergence Pass
 
 At the end of non-trivial work, Code Doctor records:

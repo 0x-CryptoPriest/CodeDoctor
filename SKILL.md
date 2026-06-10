@@ -11,7 +11,7 @@ Pick one mode before acting, based on the user request. State the mode in the fi
 - `review-only`: default for "review", "audit", or "check"; report findings and do not edit.
 - `repair`: use when the user asks to fix, address, repair, or make the change pass.
 - `restructure`: use only when structure is a proven blocker or the user asks to remove duplication/simplify.
-- `architecture`: use only when the user asks for architecture improvement; default to proposal unless the user authorizes implementation.
+- `architecture`: use only when the user asks for architecture improvement; default to candidate proposals unless the user authorizes implementation.
 - `security`: use when the task concerns secrets, auth, permissions, injection, crypto, compliance, or exposure.
 
 If the requested mode is unclear, choose the least invasive mode that can satisfy the request.
@@ -25,7 +25,7 @@ Do not ask the user to pick a mode unless the next action would be risky, destru
 5. Before any edit, pass the Fix Gate: clear evidence, real impact, smallest safe change, and a relevant validation path.
 6. If the code is wrong, weak, off-intent, or structurally poor within the active mode, patch with the smallest change that fixes the real problem.
 7. Restructure only inside the reviewed scope: shorten functions, remove duplication, merge repeated logic, and replace unsafe implementations without losing capability.
-8. Deepen architecture only when caller knowledge or scattered behavior is the proven risk; hide behavior behind a smaller public interface and preserve tests through that interface.
+8. Deepen architecture only when caller knowledge or scattered behavior is the proven risk; use the architecture vocabulary, deletion test, interface-as-test-surface rule, adapter reality check, and candidate proposal gate in `references/85-architecture-deepening.md`.
 9. Run a convergence pass: record reviewed scope, adjacent risk surfaces, explicit exclusions, and what a second pass would likely inspect.
 10. Re-run the relevant checks, rebuild intent, and review the result again.
 11. Prefer repo-local tooling and thresholds over generic defaults.
