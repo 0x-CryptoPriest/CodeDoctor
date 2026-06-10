@@ -12,17 +12,25 @@ Code Doctor helps an agent perform six related jobs.
 
 ### Intent-First Review
 
-Before judging code, the skill asks what the project is trying to do.
+Before judging code, the skill asks what the project is trying to do and what role the touched code plays inside that project.
 
-It reads the smallest useful set of intent anchors:
+It builds two layers of intent.
+
+Request intent comes from:
 
 - README, product docs, ADRs, task notes, or issue descriptions
 - public APIs and route contracts
 - tests and fixtures
 - config, CI, lint, typecheck, quality gates, and security settings
-- nearby callers and callees touched by the change
 
-This prevents a common review failure: approving code because it passes tests even though it solves the wrong problem.
+Project role intent comes from:
+
+- touched modules, components, commands, routes, workers, adapters, and tests
+- callers, callees, ordering rules, and invariants
+- data flow, persistence, trust boundaries, and external integrations
+- the user workflow, admin operation, public contract, or background job the code supports
+
+This prevents two common review failures: approving code because it answers only the user's wording while breaking its real project role, or approving code because it passes tests even though it solves the wrong problem.
 
 ### Evidence-Backed Findings
 
@@ -173,6 +181,8 @@ Each finding should include:
 - fix
 
 If nothing is wrong, the skill should say so clearly and still mention residual risk or test gaps.
+
+The `Intent` block should combine the immediate request with the inferred project role of the touched code. It should answer both "what did the user ask for?" and "what responsibility does this code have in the system?"
 
 ## How To Use It
 

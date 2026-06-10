@@ -18,7 +18,7 @@ If the requested mode is unclear, choose the least invasive mode that can satisf
 Do not ask the user to pick a mode unless the next action would be risky, destructive, or impossible to infer safely.
 
 ## Workflow
-1. Build a project intent map from the repo's high-level anchors: README, ADRs, task docs, tests, public API, and config.
+1. Build a project intent map from both request intent and project role intent: README, ADRs, task docs, tests, public API, config, touched modules, callers/callees, data flow, and runtime entry points.
 2. Inspect the diff, touched files, and nearby code.
 3. Load only the reference that matches the change: language, framework, security, API, repair, or architecture.
 4. Check intent first, then correctness, maintainability, tests, security, and acceptance.

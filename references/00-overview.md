@@ -4,10 +4,11 @@ Use this skill to judge whether a change is merge-ready.
 
 ## Default order
 1. Read the diff and the smallest relevant surrounding context.
-2. Check repo-local policy first: AGENTS, project docs, CODEOWNERS, CI, lint, typecheck, tests, security config, branch rules, quality gates.
-3. Load only the specific reference file for the change type.
-4. Pick the least invasive operating mode that satisfies the request.
-5. Prefer concrete evidence over general advice.
+2. Build both request intent and project role intent from docs, tests, public surfaces, touched modules, callers/callees, and data flow.
+3. Check repo-local policy first: AGENTS, project docs, CODEOWNERS, CI, lint, typecheck, tests, security config, branch rules, quality gates.
+4. Load only the specific reference file for the change type.
+5. Pick the least invasive operating mode that satisfies the request.
+6. Prefer concrete evidence over general advice.
 
 ## Review policy
 - Prefer repo policy over generic thresholds.
