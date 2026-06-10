@@ -120,171 +120,64 @@ The default rule is: choose the least invasive mode that satisfies the request.
 
 ## Processing Flowchart
 
-The following LaTeX/TikZ diagram shows the high-level Code Doctor workflow.
+GitHub renders this Mermaid diagram directly in Markdown.
 
-```tex
-\documentclass[tikz,border=10pt]{standalone}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+```mermaid
+flowchart TD
+    start["User request<br/>Review / Fix / Repair / Architecture"]
+    mode{"Choose least invasive mode"}
 
-\begin{document}
+    review["review-only<br/>Report, do not edit"]
+    repair["repair / restructure<br/>Smallest safe fix"]
+    arch["architecture / security<br/>Candidates first"]
 
-\begin{tikzpicture}[
-  node distance=9mm and 16mm,
-  font=\small,
-  box/.style={
-    rectangle,
-    rounded corners=3pt,
-    draw=black!65,
-    fill=gray!6,
-    align=center,
-    minimum width=35mm,
-    minimum height=9mm
-  },
-  decision/.style={
-    diamond,
-    aspect=1.8,
-    draw=black!70,
-    fill=blue!6,
-    align=center,
-    inner sep=1.5pt
-  },
-  strong/.style={
-    rectangle,
-    rounded corners=3pt,
-    draw=black!75,
-    fill=green!8,
-    align=center,
-    minimum width=42mm,
-    minimum height=9mm
-  },
-  warn/.style={
-    rectangle,
-    rounded corners=3pt,
-    draw=black!75,
-    fill=orange!10,
-    align=center,
-    minimum width=42mm,
-    minimum height=9mm
-  },
-  arrow/.style={-Latex, thick, draw=black!70}
-]
+    intent["Build Intent Map<br/>Request Intent + Project Role Intent"]
+    inspect["Inspect diff / touched files / nearby code<br/>Callers, data flow, runtime entry points"]
+    refs["Load focused references<br/>Language / Tests / Security / Repair / Architecture"]
+    finding{"Any real issue?"}
+    clean["No high-signal issue<br/>Report residual risk / test gaps"]
 
-\node[box] (start) {User request\\Review / Fix / Repair / Architecture};
-\node[decision, below=of start] (mode) {Choose least\\invasive mode};
+    archchecks["Architecture checks<br/>Deletion Test<br/>Interface-as-test-surface<br/>Adapter Reality Check<br/>Locality / Leverage"]
+    candidate["Broad architecture work<br/>Propose candidates first<br/>Strong / Worth exploring / Speculative"]
 
-\node[box, below left=of mode] (review) {review-only\\Report, do not edit};
-\node[box, below=of mode] (repair) {repair / restructure\\Smallest safe fix};
-\node[box, below right=of mode] (arch) {architecture / security\\Candidates first};
+    gate{"Fix Gate<br/>Evidence + Impact + Smallest fix + Validation"}
+    defer["Weak evidence<br/>Question / Deferred / Residual Risk"]
+    patch["Apply smallest safe change<br/>Do not touch unrelated dirty changes"]
+    validate["Run relevant validation<br/>test / lint / typecheck / build / screenshot"]
+    again{"Any issue after validation?"}
+    converge["Convergence Pass<br/>Reviewed / Not reviewed / Second-pass check"]
+    report["Final report<br/>Intent + Mode + Findings + Repair summary + Validation"]
 
-\node[strong, below=16mm of repair] (intent) {
-Build Intent Map\\
-Request Intent + Project Role Intent
-};
+    start --> mode
+    mode --> review
+    mode --> repair
+    mode --> arch
 
-\node[box, below=of intent] (inspect) {
-Inspect diff / touched files / nearby code\\
-Callers, data flow, runtime entry points
-};
+    review --> intent
+    repair --> intent
+    arch --> intent
 
-\node[box, below=of inspect] (refs) {
-Load focused references\\
-Language / Tests / Security / Repair / Architecture
-};
+    intent --> inspect
+    inspect --> refs
+    refs --> finding
+    refs --> archchecks --> candidate --> gate
 
-\node[decision, below=of refs] (finding) {
-Any real\\issue?
-};
+    finding -->|No| clean --> converge
+    finding -->|Yes| gate
+    gate -->|Fail| defer --> converge
+    gate -->|Pass| patch --> validate --> again
+    again -->|Yes, continue| gate
+    again -->|No| converge --> report
 
-\node[box, left=of finding] (clean) {
-No high-signal issue\\
-Report residual risk / test gaps
-};
+    classDef normal fill:#f7f7f7,stroke:#666,color:#111
+    classDef decision fill:#eef5ff,stroke:#4f6f9f,color:#111
+    classDef strong fill:#eef9f0,stroke:#4d7d56,color:#111
+    classDef warn fill:#fff4df,stroke:#9b6a2a,color:#111
 
-\node[decision, below=of finding] (gate) {
-Fix Gate\\
-Evidence + Impact + Smallest fix + Validation
-};
-
-\node[warn, right=of gate] (defer) {
-Weak evidence\\
-Question / Deferred / Residual Risk
-};
-
-\node[box, below=of gate] (patch) {
-Apply smallest safe change\\
-Do not touch unrelated dirty changes
-};
-
-\node[box, below=of patch] (validate) {
-Run relevant validation\\
-test / lint / typecheck / build / screenshot
-};
-
-\node[decision, below=of validate] (again) {
-Any issue\\
-after validation?
-};
-
-\node[strong, below=of again] (converge) {
-Convergence Pass\\
-Reviewed / Not reviewed / Second-pass check
-};
-
-\node[box, below=of converge] (report) {
-Final report\\
-Intent + Mode + Findings + Repair summary + Validation
-};
-
-\node[warn, right=23mm of refs] (archchecks) {
-Architecture checks\\
-Deletion Test\\
-Interface-as-test-surface\\
-Adapter Reality Check\\
-Locality / Leverage
-};
-
-\node[warn, right=23mm of archchecks] (candidate) {
-Broad architecture work\\
-Propose candidates first\\
-Strong / Worth exploring / Speculative
-};
-
-\draw[arrow] (start) -- (mode);
-\draw[arrow] (mode) -- (review);
-\draw[arrow] (mode) -- (repair);
-\draw[arrow] (mode) -- (arch);
-
-\draw[arrow] (review) |- (intent);
-\draw[arrow] (repair) -- (intent);
-\draw[arrow] (arch) |- (intent);
-
-\draw[arrow] (intent) -- (inspect);
-\draw[arrow] (inspect) -- (refs);
-\draw[arrow] (refs) -- (finding);
-
-\draw[arrow] (finding) -- node[above] {No} (clean);
-\draw[arrow] (clean) |- (converge);
-
-\draw[arrow] (finding) -- node[right] {Yes} (gate);
-\draw[arrow] (gate) -- node[above] {Fail} (defer);
-\draw[arrow] (defer) |- (converge);
-
-\draw[arrow] (gate) -- node[right] {Pass} (patch);
-\draw[arrow] (patch) -- (validate);
-\draw[arrow] (validate) -- (again);
-
-\draw[arrow] (again.west) -- ++(-28mm,0) |- node[left] {Yes, continue} (gate.west);
-\draw[arrow] (again) -- node[right] {No} (converge);
-\draw[arrow] (converge) -- (report);
-
-\draw[arrow] (refs) -- (archchecks);
-\draw[arrow] (archchecks) -- (candidate);
-\draw[arrow] (candidate.south) |- (gate.east);
-
-\end{tikzpicture}
-
-\end{document}
+    class start,review,repair,arch,inspect,refs,clean,patch,validate,report normal
+    class mode,finding,gate,again decision
+    class intent,converge strong
+    class archchecks,candidate,defer warn
 ```
 
 ## Severity Model
